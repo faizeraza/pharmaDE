@@ -12,6 +12,8 @@ streamlit = "^1.30.0"
 sqlalchemy = "^2.0.25"
 psycopg2-binary = "^2.9.9"
 sqlalchemy-file = "^0.6.0"
+plotly = "^5.20.0"
+psycopg2 = "^2.9.9"
 
 
 [tool.poetry.group.dev.dependencies]

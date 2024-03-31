@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <title>pydeck</title>
+        <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v1.13.0/mapbox-gl.js"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" />
+    <script src='https://cdn.jsdelivr.net/npm/@deck.gl/jupyter-widget@~8.8.*/dist/index.js'></script>
+    <style>
+    body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+#deck-container {
+  width: 100vw;
+  height: 100vh;
+}
+
+#deck-container canvas {
+  z-index: 1;
+  background: none;
+}
+    </style>
+  </head>
+  <body>
+    <div id="deck-container">
+    </div>
+  </body>
+  <script>
+    const container = document.getElementById('deck-container');
+    const jsonInput = {
+  "initialViewState": {
+    "latitude": 49.34264999999973,
+    "longitude": 9.869150000000015,
+    "pitch": 50,
+    "zoom": 5
+  },
+  "layers": [
+    {
+      "@@type": "ScatterplotLayer",
+      "data": [
+        {
+          "City": "Friedberg",
+          "Latitude": "49.34264999999976",
+          "Longitude": "9.869150000000017",
+          "SalesSum": "65257267.2"
+        },
+        {
+          "City": "Neustadt",
+          "Latitude": "49.08054999999996",
+          "Longitude": "8.75780000000006",
+          "SalesSum": "42021348.0"
+        },
+        {
+          "City": "Wedel",
+          "Latitude": "53.58330000000003",
+          "Longitude": "9.700000000000022",
+          "SalesSum": "35793095.0"
+        },
+        {
+          "City": "Trier",
+          "Latitude": "49.75669999999994",
+          "Longitude": "6.641399999999986",
+          "SalesSum": "34826477.0"
+        },
+        {
+          "City": "Freising",
+          "Latitude": "48.402799999999914",
+          "Longitude": "11.748900000000026",
+          "SalesSum": "32704596.0"
+        },
+        {
+          "City": "Ditzingen",
+          "Latitude": "48.826399999999936",
+          "Longitude": "9.066699999999999",
+          "SalesSum": "32276844.0"
+        },
+        {
+          "City": "Berlin",
+          "Latitude": "52.51670000000007",
+          "Longitude": "13.383299999999977",
+          "SalesSum": "29318256.0"
+        },
+        {
+          "City": "Filderstadt",
+          "Latitude": "48.66670000000003",
+          "Longitude": "9.216699999999975",
+          "SalesSum": "26939039.0"
+        },
+        {
+          "City": "Aurich",
+          "Latitude": "53.47140000000005",
+          "Longitude": "7.483600000000015",
+          "SalesSum": "26878681.0"
+        },
+        {
+          "City": "Heppenheim",
+          "Latitude": "49.641499999999986",
+          "Longitude": "8.644999999999987",
+          "SalesSum": "26247578.0"
+        }
+      ],
+      "getColor": "@@=City",
+      "getElevation": "@@=[SalesSum]",
+      "getPosition": "@@=[Latitude, Longitude]",
+      "getRadius": 100,
+      "id": "f13c2fbf-a0ba-41b3-a19c-b9dc8740ced9"
+    }
+  ],
+  "mapProvider": "carto",
+  "views": [
+    {
+      "@@type": "MapView",
+      "controller": true
+    }
+  ]
+};
+    const tooltip = {'text': '{name}\n{address}'};
+    const customLibraries = null;
+    const configuration = null;
+
+    const deckInstance = createDeck({
+                  container,
+      jsonInput,
+      tooltip,
+      customLibraries,
+      configuration
+    });
+
+  </script>
+</html>

@@ -1,8 +1,6 @@
 from ast import main
-import mailbox
 from operator import index
 import pandas as pd
-import psycopg2
 from sqlalchemy import create_engine
 class ETL:
     def __init__(self) -> None:
@@ -20,11 +18,20 @@ class ETL:
         print("Data Extracted Successfully...")
         return data
 
+    def changeyeartype(self,x):
+        x = round(x)
+        return x
     def transform(self,pharma_df):
         #it will return list of dataframes for respective tables
         pharma_df['calc_amount'] = pharma_df["Quantity"] * pharma_df["Price"]
         dflist = {}
 
+        #cleaning data
+        pharma_df.dropna(axis=0, how='any',inplace=True)
+
+        #transforming year column
+        pharma_df['Year'] = pharma_df['Year'].apply(self.changeyeartype)
+        pharma_df['Year'] = pd.to_datetime(pharma_df['Year'], format='%Y')
         #creating customer dimension
         customer = pd.DataFrame({"Customer Name":pharma_df['Customer Name'].unique()})
         customer['Customer_ID'] = customer.index
@@ -98,7 +105,7 @@ class ETL:
 
         print("Data Loaded Successfully...")
     
-    def load_to_bigquery(dflist):
+    def load_to_cloud(dflist):
         # it will create tables and schema for the perticular dataframe
         return 
     
