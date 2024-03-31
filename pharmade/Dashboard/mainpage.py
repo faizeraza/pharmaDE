@@ -46,7 +46,7 @@ class MainPage:
         df = pd.DataFrame(np.array(result),columns=["City","SalesSum","Lat","Long"])
         df["Long"] = df["Long"].astype(float)
         df["Lat"] = df["Lat"].astype(float)
-        df["SalesSum"] = df["SalesSum"].astype(float)/10000
+        df["SalesSum"] = df["SalesSum"].astype(float)
         # df["SalesSum"] = df["SalesSum"]/1000
         print(df)
         st.pydeck_chart(pdk.Deck(
@@ -54,20 +54,33 @@ class MainPage:
                 latitude=df['Lat'][0],
                 longitude=df['Long'][0],
                 zoom=5,
-                pitch=30,
+                pitch=100,
             ),
             layers=[
                 pdk.Layer(
                     'ColumnLayer',
                     data=df,
                     get_position=['Long',"Lat"],
-                    get_elevation=["SalesSum"],
+                    get_elevation=["SalesSum/10000"],
                     auto_highlight=True,
-                    elevation_scale=10,
+                    elevation_scale=50,
                     pickable=True,
                     extruded=True,
                     get_radius=100,
                     get_fill_color=[245, 203, 66],
+                    coverage=1
+                ),
+                pdk.Layer(
+                    'HexagonLayer',
+                    data=df,
+                    get_position=['Long',"Lat"],
+                    get_elevation=["SalesSum"],
+                    auto_highlight=True,
+                    elevation_scale=100,
+                    pickable=True,
+                    extruded=True,
+                    get_radius=100,
+                    get_fill_color=[227, 99, 14],
                     coverage=1
                 )
             ]
