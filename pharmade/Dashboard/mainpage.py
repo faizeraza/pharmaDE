@@ -19,8 +19,8 @@ class MainPage:
     def selectjob(self):
         query = """SELECT Distinct("Year") FROM public."Fact-sales";"""
         self.cur.execute(query)
-        years = [str(ele[0])[:4] for ele in self.cur.fetchall()]
-        years.append("ALL")
+        years =["ALL"]
+        years = years+[str(ele[0])[:4] for ele in self.cur.fetchall()]
         job_filter = st.selectbox("Select the Year", years)
         # self.cur.close()
         return job_filter
@@ -84,8 +84,7 @@ class MainPage:
                     coverage=1
                 )
             ]
-        ))
-    
+        ))    
 
 if __name__=="__main__":
     path = r"C:\Users\Faizan Raza\Desktop\pharmaDE\pharmade\DATA\pharma-data.csv"
