@@ -24,7 +24,7 @@ class MainPage:
         job_filter = st.selectbox("Select the Year", years)
         # self.cur.close()
         return job_filter
-    def plottopdict(self):
+    def plottopdist(self):
         query = """SELECT "Distributor", SUM("fs"."Sales")
                 FROM public."Fact-sales" as "fs" left join public."DIM-distributor" as "dist" on "fs"."Distributor_ID" = "dist"."Distributor_ID"
                 Group BY "dist"."Distributor"
@@ -34,6 +34,18 @@ class MainPage:
         df = pd.DataFrame(np.array(result),columns=["Distributors","Sales"])
         # print(df)
         fig = px.bar(df,x="Distributors",y="Sales")
+        st.plotly_chart(fig,use_container_width=True)
+
+    def plottopcust(self):
+        query = """SELECT "Customer Name", SUM("fs"."Sales")
+                FROM public."Fact-sales" as "fs" left join public."DIM-customer" as "cust" on "fs"."Customer_ID" = "cust"."Customer_ID"
+                Group BY "cust"."Customer Name"
+                Order By "sum" DESC limit 5;"""
+        self.cur.execute(query)
+        result = self.cur.fetchall()
+        df = pd.DataFrame(np.array(result),columns=["Customer Name","Sales"])
+        # print(df)
+        fig = px.bar(df,x="Customer Name",y="Sales")
         st.plotly_chart(fig,use_container_width=True)
 
     def plottopcity(self):
@@ -90,5 +102,6 @@ if __name__=="__main__":
     path = r"C:\Users\Faizan Raza\Desktop\pharmaDE\pharmade\DATA\pharma-data.csv"
     mainpage = MainPage(path)
     mainpage.selectjob()
-    mainpage.plottopdict()
+    mainpage.plottopdist()
+    mainpage.plottopcust()
     mainpage.plottopcity()

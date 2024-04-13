@@ -10,10 +10,16 @@ class sqltoquery:
         st.header('Query To Graph')
         conn = psy.connect("dbname=postgres user=postgres")
         self.cur = conn.cursor()
-    def ggenerator(self,df,metadata):
+    def ggenerator(self,df,metadata,colums):
         if metadata[0]=="Bar Chart":
-            fig = px.bar(df,x="Distributors",y="Sales")
-            st.bar_chart(df)
+            fig = px.bar(df,x=colums[0],y=columns[1])
+            st.plotly_chart(fig,use_container_width=True)
+        elif metadata[0]=="Line Chart":
+            fig = px.line(df,x=colums[0],y=columns[1])
+            st.plotly_chart(fig,use_container_width=True)
+        elif metadata[0]=="Pie Chart":
+            fig = px.pie(df,names=colums[0],values=columns[1])
+            st.plotly_chart(fig,use_container_width=True)
     def querytodf(self,query,columns):
         self.cur.execute(query)
         result = self.cur.fetchall()
@@ -23,12 +29,14 @@ class sqltoquery:
         pass
 
 if __name__=="__main__":
-    query = st.text_area("Entery Query Here")
-    columns = st.text_input("Enter Columns Name")
+    query = st.text_area("Entery Query Here (the output must contain two columns only)")
+    columns = st.text_input("Enter Columns Name (first must be continues second categorical)")
     option = st.selectbox("Select Graph",("Bar Chart","Line Chart","Pie Chart"))
     if st.button('Run'):
         main = sqltoquery()
         df = main.querytodf(query,columns)
         st.dataframe(df,use_container_width=True)
         metadata = [option]
-        main.ggenerator(df,metadata)
+        columns = columns.split(',')
+        print(type(columns))
+        main.ggenerator(df,metadata,columns)

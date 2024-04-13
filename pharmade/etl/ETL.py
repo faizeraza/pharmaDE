@@ -67,12 +67,12 @@ class ETL:
         #creating sales repository dimension
         df_salserep = pd.DataFrame({"Name of Sales Rep":pharma_df["Name of Sales Rep"].unique()})
         df_salserep["Sales_rep_ID"] = df_salserep.index
-        dflist['DIM-slaes-rep'] = df_salserep
+        dflist['DIM-sales-rep'] = df_salserep
 
         #creating slaes team dimension
         df_salseteam = pharma_df[['Sales Team', 'Manager']].drop_duplicates()[:-1].reset_index().drop('index',axis=1)
         df_salseteam["Sales_team_ID"] = df_salseteam.index
-        dflist['DIM-slaes-team'] = df_salseteam
+        dflist['DIM-sales-team'] = df_salseteam
 
         #creating fact dataframe
         # print(pharma_df.columns)
