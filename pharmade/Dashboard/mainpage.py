@@ -1,107 +1,63 @@
-import numpy as np
+import base64
 import streamlit as st
-import pandas as pd
-import plotly.express as px
-import psycopg2 
-import pydeck as pdk
+from streamlit.components.v1 import html
 
 class MainPage:
-    def __init__(self,url) -> None:
+    def __init__(self) -> None:
         st.set_page_config(
             page_title="Dashboard",
             page_icon="📊",
             layout="wide",
         )
         st.title("Pharma Dashboard")
-        self.pharmadf = pd.read_csv(url)
-        conn = psycopg2.connect("dbname=postgres user=postgres")
-        self.cur = conn.cursor()
-    def selectjob(self):
-        query = """SELECT Distinct("Year") FROM public."Fact-sales";"""
-        self.cur.execute(query)
-        years =["ALL"]
-        years = years+[str(ele[0])[:4] for ele in self.cur.fetchall()]
-        job_filter = st.selectbox("Select the Year", years)
-        # self.cur.close()
-        return job_filter
-    def plottopdist(self):
-        query = """SELECT "Distributor", SUM("fs"."Sales")
-                FROM public."Fact-sales" as "fs" left join public."DIM-distributor" as "dist" on "fs"."Distributor_ID" = "dist"."Distributor_ID"
-                Group BY "dist"."Distributor"
-                Order By "sum" DESC limit 5;"""
-        self.cur.execute(query)
-        result = self.cur.fetchall()
-        df = pd.DataFrame(np.array(result),columns=["Distributors","Sales"])
-        # print(df)
-        fig = px.bar(df,x="Distributors",y="Sales")
-        st.plotly_chart(fig,use_container_width=True)
+    def get_base64(self,bin_file):
+        with open(bin_file, 'rb') as f:
+            data = f.read()
+        return base64.b64encode(data).decode()
 
-    def plottopcust(self):
-        query = """SELECT "Customer Name", SUM("fs"."Sales")
-                FROM public."Fact-sales" as "fs" left join public."DIM-customer" as "cust" on "fs"."Customer_ID" = "cust"."Customer_ID"
-                Group BY "cust"."Customer Name"
-                Order By "sum" DESC limit 5;"""
-        self.cur.execute(query)
-        result = self.cur.fetchall()
-        df = pd.DataFrame(np.array(result),columns=["Customer Name","Sales"])
-        # print(df)
-        fig = px.bar(df,x="Customer Name",y="Sales")
-        st.plotly_chart(fig,use_container_width=True)
+    def set_background(self,png_file):
+        bin_str = self.get_base64(png_file)
+        page_bg_img = '''
+        <style>
+        body {
+        background-image: url("data:image/png;base64,%s");
+        background-size: ;
+        background-attachment: local;
+        background-origin: content-box;
+        }
+        </style>
+        ''' % bin_str
+        st.markdown(page_bg_img, unsafe_allow_html=True)
 
-    def plottopcity(self):
-        query = """SELECT "ct"."City", SUM("fs"."Sales") as "SalesSum",AVG("ct"."Latitude") as "Latitude",AVG("Longitude") as "Longitude"
-                FROM public."Fact-sales" as "fs" left join public."DIM-city" as "ct" on "fs"."City_ID" = "ct"."City_ID"
-                Group BY "ct"."City"
-                Order By "SalesSum" DESC;"""
-        self.cur.execute(query)
-        result = self.cur.fetchall()
-        df = pd.DataFrame(np.array(result),columns=["City","SalesSum","Lat","Long"])
-        df["Long"] = df["Long"].astype(float)
-        df["Lat"] = df["Lat"].astype(float)
-        df["SalesSum"] = df["SalesSum"].astype(float)
-        # df["SalesSum"] = df["SalesSum"]/1000
-        print(df)
-        st.pydeck_chart(pdk.Deck(
-            initial_view_state=pdk.ViewState(
-                latitude=df['Lat'][0],
-                longitude=df['Long'][0],
-                zoom=5,
-                pitch=100,
-            ),
-            layers=[
-                pdk.Layer(
-                    'ColumnLayer',
-                    data=df,
-                    get_position=['Long',"Lat"],
-                    get_elevation=["SalesSum/10000"],
-                    auto_highlight=True,
-                    elevation_scale=50,
-                    pickable=True,
-                    extruded=True,
-                    get_radius=100,
-                    get_fill_color=[245, 203, 66],
-                    coverage=1
-                ),
-                pdk.Layer(
-                    'HexagonLayer',
-                    data=df,
-                    get_position=['Long',"Lat"],
-                    get_elevation=["SalesSum"],
-                    auto_highlight=True,
-                    elevation_scale=100,
-                    pickable=True,
-                    extruded=True,
-                    get_radius=100,
-                    get_fill_color=[227, 99, 14],
-                    coverage=1
-                )
-            ]
-        ))    
+    def showschema(self):
+        self.set_background(r'C:\Users\Faizan Raza\Desktop\pharmaDE\images\bgimage.JPG')
+        st.markdown(
+            """
+            <style>
+            .element-container:has(style){
+                display: none;
+            }
+            #button-after {
+                display: none;
+            }
+            .element-container:has(#button-after) {
+                display: none;
+            }
+            .element-container:has(#button-after) + div button {
+                background-color: Green;
+                width: 100px;
+                height: 20px;
+                }
+            </style>
+            """,
+            unsafe_allow_html=True,
+        )
+        st.markdown('<span id="button-after"></span>', unsafe_allow_html=True)
+        started = st.button("Get Start")
+        if started:
+            st.switch_page(r"C:\Users\Faizan Raza\Desktop\pharmaDE\pharmade\Dashboard\pages\distandcust.py")
+        st.image(r'images\final_schema.PNG', caption='Star Schema')
 
 if __name__=="__main__":
-    path = r"C:\Users\Faizan Raza\Desktop\pharmaDE\pharmade\DATA\pharma-data.csv"
-    mainpage = MainPage(path)
-    mainpage.selectjob()
-    mainpage.plottopdist()
-    mainpage.plottopcust()
-    mainpage.plottopcity()
+    mainpage = MainPage()
+    mainpage.showschema()

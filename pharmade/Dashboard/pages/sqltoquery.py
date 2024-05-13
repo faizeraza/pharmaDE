@@ -21,9 +21,13 @@ class sqltoquery:
             fig = px.pie(df,names=colums[0],values=columns[1])
             st.plotly_chart(fig,use_container_width=True)
     def querytodf(self,query,columns):
-        self.cur.execute(query)
-        result = self.cur.fetchall()
-        df = pd.DataFrame(np.array(result),columns=columns.split(","))
+        try:
+            self.cur.execute(query)
+            result = self.cur.fetchall()
+            df = pd.DataFrame(np.array(result),columns=columns.split(","))
+        except:
+            st.warning("There is something wrong with your query", icon="🤕")
+            df = None
         return df
     def decorator(self):
         pass

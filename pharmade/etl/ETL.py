@@ -17,6 +17,11 @@ class ETL:
         data =  pd.read_csv("pharmade/DATA/pharma-data.csv")
         print("Data Extracted Successfully...")
         return data
+    
+    def extractorAPI(url):
+        data =  pd.read_csv("pharmade/DATA/pharma-data.csv")
+        print("Data Extracted Successfully...")
+        return data
 
     def changeyeartype(self,x):
         x = round(x)
