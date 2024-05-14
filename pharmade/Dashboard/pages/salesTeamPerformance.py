@@ -12,7 +12,7 @@ class salesTeamPerformance:
             page_icon="📊",
             layout="wide",
         )
-        st.title("Pharma Dashboard")
+        st.title("Sales Team Performance")
         # self.pharmadf = pd.read_csv(url)
         conn = psycopg2.connect("dbname=postgres user=postgres")
         self.cur = conn.cursor()
