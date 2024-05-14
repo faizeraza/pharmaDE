@@ -16,14 +16,7 @@ class distandcustanalysis:
         # self.pharmadf = pd.read_csv(url)
         conn = psycopg2.connect("dbname=postgres user=postgres")
         self.cur = conn.cursor()
-    # def selectjob(self):
-    #     query = """SELECT Distinct("Year") FROM public."Fact-sales";"""
-    #     self.cur.execute(query)
-    #     years =["ALL"]
-    #     years = years+[str(ele[0])[:4] for ele in self.cur.fetchall()]
-    #     job_filter = st.selectbox("Select the Year", years)
-    #     # self.cur.close()
-    #     return job_filter
+
     def plottopdist(self):
         st.write("Top Distributors")
         query = """SELECT "Distributor", SUM("fs"."Sales")
@@ -130,7 +123,6 @@ class distandcustanalysis:
 if __name__=="__main__":
     path = r"C:\Users\Faizan Raza\Desktop\pharmaDE\pharmade\DATA\pharma-data.csv"
     dandcanalysis = distandcustanalysis(path)
-    # mainpage.selectjob()
     dandcanalysis.plottopdist()
     dandcanalysis.plottopcust()
     dandcanalysis.plottopcity()
